@@ -1,0 +1,41 @@
+services:
+  web:
+    build:
+      context: ./web
+      dockerfile: ./Dockerfile
+    container_name: web
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: 500m
+    ports:
+      - "8080:80"  # host物理直接映射端口为13306
+    environment:
+      TZ: Asia/Shanghai
+
+
+  server:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: server
+    container_name: server
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: 500m
+    ports:
+      - "8888:8888"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /root/server/config:/app/config
+    environment:
+      - PHAROS_RPC_URL=https://rpc.sepolia.mantle.xyz
+      - INVOICE_CONTRACT_ADDRESS=0x3fdBBc8074978c7fd8941efB71d1a8d71327E1C1
+      - SIGNER_PRIVATE_KEY=a799113664dc565f586f66efab71888e9f5cecd3984d79fd51dab5837915b7a6
+
+
+
